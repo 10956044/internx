@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}InternX{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 導航列動畫 */
+        @keyframes slideDownFade {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        /* 成功提示動畫 */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .success-toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1000;
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+
+        .success-toast.hide {
+            animation: slideOutRight 0.5s ease-out forwards;
+        }
+
+        /* 波紋效果 */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple:after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+            background-repeat: no-repeat;
+            background-position: 50%;
+            transform: scale(10, 10);
+            opacity: 0;
+            transition: transform .5s, opacity 1s;
+        }
+
+        .ripple:active:after {
+            transform: scale(0, 0);
+            opacity: .3;
+            transition: 0s;
+        }
+
+        /* 導航列樣式 */
+        .navbar {
+            animation: slideDownFade 0.5s ease-out;
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 1rem;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: 95%;
+            max-width: 1600px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+
+        .navbar.scrolled {
+            height: 60px;
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #A3D5FF, #C2AFFF);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #A3D5FF, #C2AFFF);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(163, 213, 255, 0.3);
+        }
+
+        /* 下拉選單樣式 */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 0.5rem;
+            min-width: 12rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #4B5563;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #F9FAFB;
+            color: #111827;
+        }
+
+        /* 添加一個透明的區域來防止選單消失 */
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 導航列 -->
+    <nav class="navbar">
+        <div class="container mx-auto px-8 h-full flex items-center justify-between">
+            <!-- Logo -->
+            <a href="{{ url_for('index') }}" class="flex items-center">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" 
+                     alt="InternX Logo" 
+                     class="h-12 w-auto hover:opacity-90 transition-all duration-300">
+            </a>
+
+            <!-- 導航連結 -->
+            <div class="hidden md:flex items-center space-x-12">
+                <a href="{{ url_for('internships') }}" class="nav-link text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-search mr-2"></i>找實習
+                </a>
+                <a href="{{ url_for('consulting') }}" class="nav-link text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-comments mr-2"></i>職涯諮詢
+                </a>
+                <a href="{{ url_for('experience') }}" class="nav-link text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-book-open mr-2"></i>經驗分享
+                </a>
+            </div>
+
+            <!-- 登入/註冊按鈕 -->
+            <div class="flex items-center space-x-4">
+                {% if current_user.is_authenticated %}
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 focus:outline-none">
+                            {% if current_user.image %}
+                                <img src="{{ current_user.image }}" 
+                                     alt="頭像" 
+                                     class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                            {% else %}
+                                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                                    <i class="fas fa-user text-gray-500 text-xl"></i>
+                                </div>
+                            {% endif %}
+                            <span class="text-gray-600">{{ current_user.username }}</span>
+                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <!-- 下拉選單 -->
+                        <div class="dropdown-content absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 hidden group-hover:block">
+                            <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i>個人資料
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-red-600 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i>登出
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-sign-in-alt mr-2"></i>登入
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="px-4 py-2 bg-gradient-to-r from-blue-400 to-purple-400 text-white rounded-xl hover:from-blue-500 hover:to-purple-500 hover:shadow-lg transition-all duration-300">
+                        <i class="fas fa-user-plus mr-2"></i>註冊
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容 -->
+    <main class="pt-24">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 成功提示 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' %}
+                    <div class="success-toast" id="successToast">
+                        <div class="bg-white rounded-xl shadow-lg p-4 flex items-center space-x-3 border-l-4 border-green-500">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i class="fas fa-check text-green-500"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-800 font-medium">{{ message }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- 滾動監聽腳本 -->
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 成功提示自動消失
+        const successToast = document.getElementById('successToast');
+        if (successToast) {
+            setTimeout(() => {
+                successToast.classList.add('hide');
+                setTimeout(() => {
+                    successToast.remove();
+                }, 500);
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

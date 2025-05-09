@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% from "components/pagination.html" import render_pagination %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div class="container mx-auto px-4 py-24">
+        <!-- 頁面標題區域 -->
+        <div class="relative mb-16">
+            <!-- 背景裝飾 -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute -top-24 -left-24 w-96 h-96 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full opacity-50 blur-3xl"></div>
+                <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full opacity-50 blur-3xl"></div>
+            </div>
+            
+            <!-- 標題內容 -->
+            <div class="relative text-center max-w-3xl mx-auto">
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+                    職涯諮詢
+                </h1>
+                <p class="text-gray-600 text-lg leading-relaxed">
+                    與專業顧問一對一交流，為你的職涯規劃提供專業建議
+                </p>
+            </div>
+        </div>
+
+        <!-- 諮詢顧問列表 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for i in range(6) %}
+            <div class="group relative">
+                <!-- 背景裝飾 -->
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl transform transition-all duration-300 group-hover:scale-105"></div>
+                
+                <!-- 卡片內容 -->
+                <div class="relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
+                    <div class="p-6">
+                        <!-- 顧問資訊 -->
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="relative">
+                                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-white font-bold text-xl">
+                                    J
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-900">John Smith</h3>
+                                <p class="text-sm text-gray-500">前 Google 資深工程師</p>
+                            </div>
+                        </div>
+
+                        <!-- 專業領域 -->
+                        <div class="mb-6">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">專業領域</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 text-sm rounded-full bg-blue-50 text-blue-600">軟體開發</span>
+                                <span class="px-3 py-1 text-sm rounded-full bg-purple-50 text-purple-600">職涯規劃</span>
+                                <span class="px-3 py-1 text-sm rounded-full bg-pink-50 text-pink-600">面試技巧</span>
+                            </div>
+                        </div>
+
+                        <!-- 評價 -->
+                        <div class="flex items-center mb-6">
+                            <div class="flex text-yellow-400">
+                                {% for _ in range(5) %}
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                {% endfor %}
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">4.9 (128 次諮詢)</span>
+                        </div>
+
+                        <!-- 預約按鈕 -->
+                        <a href="#" class="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-400 to-purple-400 text-white rounded-xl hover:shadow-lg hover:scale-105 transform transition-all duration-300">
+                            預約諮詢
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 分頁 -->
+        {{ render_pagination(current_page=1, total_pages=5) }}
+    </div>
+</div>
+{% endblock %} 
